@@ -913,7 +913,12 @@ void RemoteStore::narFromPath(const StorePath & path, Sink & sink)
 {
     auto conn(getConnection());
     conn->narFromPath(*this, &conn.daemonException, path, [&](Source & source) {
-        copyNAR(conn->from, sink);
+        if (conn->features.contains("frameNarFromPath")) {
+            FramedSource source(conn->from);
+            copyNAR(source, sink);
+        } else {
+            copyNAR(conn->from, sink);
+        }
     });
 }
 

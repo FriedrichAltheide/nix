@@ -888,7 +888,14 @@ static void performOp(TunnelLogger * logger, ref<Store> store,
         auto path = store->parseStorePath(readString(conn.from));
         logger->startWork();
         logger->stopWork();
-        dumpPath(store->toRealPath(path), conn.to);
+        if (conn.features.contains("frameNarFromPath")) {
+            FramedSink sink(conn.to, [&]() {
+            });
+            dumpPath(store->toRealPath(path), sink);
+            sink.flush();
+        } else {
+            dumpPath(store->toRealPath(path), conn.to);
+        }
         break;
     }
 

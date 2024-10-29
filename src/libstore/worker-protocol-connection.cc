@@ -5,7 +5,9 @@
 
 namespace nix {
 
-const std::set<WorkerProto::Feature> WorkerProto::allFeatures{};
+const std::set<WorkerProto::Feature> WorkerProto::allFeatures{
+    "frameNarFromPath"
+};
 
 WorkerProto::BasicClientConnection::~BasicClientConnection()
 {
